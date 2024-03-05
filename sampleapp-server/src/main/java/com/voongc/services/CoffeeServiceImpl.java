@@ -14,22 +14,34 @@ import java.util.Optional;
 @Service
 public class CoffeeServiceImpl implements CoffeeService {
 
-    @Autowired
-    private final CupRepository cupRepository;
-    @Autowired
-    private final GradeRepository gradeRepository;
-    @Autowired
-    private final TypeRepository typeRepository;
-    @Autowired
-    private final GoodRepository goodRepository;
-    @Autowired
-    private final CoffeeRepository coffeeRepository;
+    private CupRepository cupRepository;
+    private GradeRepository gradeRepository;
+    private TypeRepository typeRepository;
+    private GoodRepository goodRepository;
+    private CoffeeRepository coffeeRepository;
 
-    public CoffeeServiceImpl(CupRepository cupRepository, GradeRepository gradeRepository, TypeRepository typeRepository, GoodRepository goodRepository, CoffeeRepository coffeeRepository) {
+    @Autowired
+    public void setCupRepository(CupRepository cupRepository){
         this.cupRepository = cupRepository;
+    }
+
+    @Autowired
+    public void setGradeRepository(GradeRepository gradeRepository){
         this.gradeRepository = gradeRepository;
+    }
+
+    @Autowired
+    public void setTypeRepository(TypeRepository typeRepository){
         this.typeRepository = typeRepository;
+    }
+
+    @Autowired
+    public void setGoodRepository(GoodRepository goodRepository){
         this.goodRepository = goodRepository;
+    }
+
+    @Autowired
+    public void setCoffeeRepository(CoffeeRepository coffeeRepository){
         this.coffeeRepository = coffeeRepository;
     }
 
