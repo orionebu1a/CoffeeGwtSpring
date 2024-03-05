@@ -10,6 +10,16 @@ spring:
   application:
     name: sampleapp
 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/coffee
+    username: postgres
+    password: mcs148148
+#    jpa:
+#      hibernate:
+#        ddl-auto: update
+#      database: postgresql
+
+
   devtools:
     restart:
       additional-exclude: launcherDir/**
@@ -37,8 +47,8 @@ debug: false
 
 logging:
   level:
-    web: info
-    root: info
+    web: debug
+    root: debug
 
   pattern:
     file: '%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15} - %msg%n'
