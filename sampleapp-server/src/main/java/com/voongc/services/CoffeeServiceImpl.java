@@ -3,16 +3,15 @@ package com.voongc.services;
 import com.voongc.repositories.*;
 import com.voongc.service.CoffeeService;
 import com.voongc.service.entities.*;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.annotation.WebServlet;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@AllArgsConstructor
-@WebServlet("/sampleapp/greet")
+
+@Service
 public class CoffeeServiceImpl implements CoffeeService {
 
     @Autowired
@@ -25,6 +24,14 @@ public class CoffeeServiceImpl implements CoffeeService {
     private final GoodRepository goodRepository;
     @Autowired
     private final CoffeeRepository coffeeRepository;
+
+    public CoffeeServiceImpl(CupRepository cupRepository, GradeRepository gradeRepository, TypeRepository typeRepository, GoodRepository goodRepository, CoffeeRepository coffeeRepository) {
+        this.cupRepository = cupRepository;
+        this.gradeRepository = gradeRepository;
+        this.typeRepository = typeRepository;
+        this.goodRepository = goodRepository;
+        this.coffeeRepository = coffeeRepository;
+    }
 
     public Grade refillGrade(String gradeName, int count) {
         Optional<Grade> optionalGrade = gradeRepository.findByName(gradeName);

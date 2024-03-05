@@ -9,14 +9,28 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 @Entity
 public class Type implements IsSerializable {
     @Id
     private String name;
+
+    public Type() {
+    }
+
+    // All-args constructor
+    public Type(String name) {
+        this.name = name;
+    }
+
+    // Getters and Setters
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
 
 

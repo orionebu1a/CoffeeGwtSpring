@@ -1,12 +1,12 @@
 package com.voongc.repositories;
 import com.voongc.service.entities.Cup;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface CupRepository extends JpaRepository<Cup, Long> {
+public interface CupRepository extends CrudRepository<Cup, Long> {
     Optional<Cup> findByValue(float value);
     Optional<Cup> findFirstByBalanceGreaterThan(int quantity);
     void deleteByValue(float value);
