@@ -1,19 +1,18 @@
 package com.voongc.services;
 
-import com.voongc.domain.*;
-import com.voongc.entities.CoffeeImpl;
 import com.voongc.repositories.*;
 import com.voongc.service.CoffeeService;
+import com.voongc.service.entities.*;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.annotation.WebServlet;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @AllArgsConstructor
-@Service
+@WebServlet("/sampleapp/greet")
 public class CoffeeServiceImpl implements CoffeeService {
 
     @Autowired
@@ -148,7 +147,7 @@ public class CoffeeServiceImpl implements CoffeeService {
         grade.setBalance(grade.getBalance() - 1);
         cup.setBalance(cup.getBalance() - 1);
 
-        Coffee coffee = (Coffee) new CoffeeImpl();
+        Coffee coffee = new Coffee();
         coffee.setCup(cup);
         coffee.setGrade(grade);
         coffee.setType(type);

@@ -1,8 +1,8 @@
 package com.voongc.repositories;
 
-import com.voongc.domain.Coffee;
-import org.springframework.stereotype.Repository;
+import com.voongc.service.entities.Coffee;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CoffeeRepository extends JpaRepository<Coffee, Long> {

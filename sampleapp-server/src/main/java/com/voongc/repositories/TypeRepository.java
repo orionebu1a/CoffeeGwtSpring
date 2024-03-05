@@ -1,5 +1,5 @@
 package com.voongc.repositories;
-import com.voongc.domain.Type;
+import com.voongc.service.entities.Type;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

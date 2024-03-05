@@ -1,10 +1,12 @@
 package com.voongc.service;
 
-import com.voongc.domain.*;
 
-import java.util.List;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.voongc.service.entities.*;
 
-public interface CoffeeService {
+@RemoteServiceRelativePath("greet")
+public interface CoffeeService extends RemoteService {
 
     Grade refillGrade(String gradeName, int count);
 

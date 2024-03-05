@@ -1,5 +1,5 @@
 package com.voongc.repositories;
-import com.voongc.domain.Cup;
+import com.voongc.service.entities.Cup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

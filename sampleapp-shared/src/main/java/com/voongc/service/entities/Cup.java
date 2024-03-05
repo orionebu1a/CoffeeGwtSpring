@@ -1,19 +1,20 @@
-package com.voongc.entities;
+package com.voongc.service.entities;
 
-import com.test.testTask.shared.domain.Cup;
+import com.google.gwt.user.client.rpc.IsSerializable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
-public class CupImpl implements Cup {
+public class Cup implements IsSerializable {
     @Id
     private float value;
     private int balance;

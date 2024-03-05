@@ -1,7 +1,7 @@
 package com.voongc.service;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.voongc.domain.*;
+import com.voongc.service.entities.*;
 
 /**
  * The async counterpart of <code>GreetingService</code>.
