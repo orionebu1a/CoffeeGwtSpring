@@ -49,9 +49,11 @@ public class App implements EntryPoint {
 	/**
 	 * This is the entry point method.
 	 */
+	private final TextBox nameField = new TextBox();
+
 	public void onModuleLoad() {
 		final Button sendButton = new Button("Send");
-		final TextBox nameField = new TextBox();
+		//final TextBox nameField = new TextBox();
 		nameField.setText("GWT User");
 		final Label errorLabel = new Label();
 
@@ -131,10 +133,11 @@ public class App implements EntryPoint {
 				textToServerLabel.setText(textToServer);
 				serverResponseLabel.setText("");
 
-				Map<String, Object> params = new HashMap<>();
-				params.put("username", textToServer);
-				params.put("password", "CONST_PASSWORD");
-				sendRequestByRPC(params);
+//				Map<String, Object> params = new HashMap<>();
+//				params.put("username", textToServer);
+//				params.put("password", "CONST_PASSWORD");
+//				sendRequestByRPC(params);
+				sendHttpRequestByGWT(getFormJsonData());
 			}
 		}
 
@@ -159,6 +162,26 @@ public class App implements EntryPoint {
 		});
 	}
 
+	private String getFormJsonData() {
+		Map<String, Object> params = getFormData();
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("username", new JSONString(params.get("username").toString()));
+		jsonObject.put("password", new JSONString(params.get("password").toString()));
+		return jsonObject.toString();
+	}
+
+	private Map<String, Object> getFormData() {
+		//String username = usernameItem.getValueAsString();
+		//String password = passwordItem.getValueAsString();
+		String username = "admin";
+		String password = "123";
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("username", username);
+		params.put("password", password);
+		return params;
+	}
+
 	private void sendHttpRequestByGWT(String json) {
 		String actionUrl = GWT.getHostPageBaseURL() + "login";
 
@@ -170,6 +193,7 @@ public class App implements EntryPoint {
 				@Override
 				public void onResponseReceived(Request request, Response response) {
 					if (response.getStatusCode() == 200) {
+						nameField.setText(response.getText());
 						System.out.println("login success: " + response.getText());
 					} else {
 						System.out.println("login error, status code is: " + response.getStatusCode());

@@ -14,7 +14,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import java.util.Map;
 
 @ServletComponentScan
-@SpringBootApplication(scanBasePackages={"com.voongc.repositories", "com.voongc.rpc", "com.voongc.web.servlet"})
+@SpringBootApplication(scanBasePackages={"com.voongc.repositories", "com.voongc.rpc", "com.voongc.web.servlet", "com.voongc.web.testController"})
 public class Application extends SpringBootServletInitializer {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
