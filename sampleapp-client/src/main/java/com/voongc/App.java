@@ -7,6 +7,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.http.client.*;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -16,10 +19,16 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.voongc.rpc.RPCRemoteService;
+import com.voongc.rpc.RPCRemoteServiceAsync;
+import com.voongc.rpc.RPCUtil;
 import com.voongc.service.FieldVerifier;
 import com.voongc.service.GreetingResponse;
 import com.voongc.service.GreetingService;
 import com.voongc.service.GreetingServiceAsync;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -36,8 +45,6 @@ public class App implements EntryPoint {
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting service.
 	 */
-	private final GreetingServiceAsync greetingService = GWT
-			.create(GreetingService.class);
 
 	/**
 	 * This is the entry point method.
@@ -123,34 +130,11 @@ public class App implements EntryPoint {
 				sendButton.setEnabled(false);
 				textToServerLabel.setText(textToServer);
 				serverResponseLabel.setText("");
-				greetingService.greetServer(textToServer,
-						new AsyncCallback<GreetingResponse>() {
-							public void onFailure(Throwable caught) {
-								// Show the RPC error message to the user
-								dialogBox
-										.setText("Remote Procedure Call - Failure");
-								serverResponseLabel
-										.addStyleName("serverResponseLabelError");
-								serverResponseLabel.setHTML(SERVER_ERROR);
-								dialogBox.center();
-								closeButton.setFocus(true);
-							}
 
-							public void onSuccess(GreetingResponse result) {
-								dialogBox.setText("Remote Procedure Call");
-								serverResponseLabel
-										.removeStyleName("serverResponseLabelError");
-								serverResponseLabel.setHTML(new SafeHtmlBuilder()
-										.appendEscaped(result.getGreeting())
-										.appendHtmlConstant("<br><br>I am running ")
-										.appendEscaped(result.getServerInfo())
-										.appendHtmlConstant(".<br><br>It looks like you are using:<br>")
-										.appendEscaped(result.getUserAgent())
-										.toSafeHtml());
-								dialogBox.center();
-								closeButton.setFocus(true);
-							}
-						});
+				Map<String, Object> params = new HashMap<>();
+				params.put("username", textToServer);
+				params.put("password", "CONST_PASSWORD");
+				sendRequestByRPC(params);
 			}
 		}
 
@@ -158,5 +142,47 @@ public class App implements EntryPoint {
 		MyHandler handler = new MyHandler();
 		sendButton.addClickHandler(handler);
 		nameField.addKeyUpHandler(handler);
+	}
+
+	private void sendRequestByRPC(Map<String, Object> params) {
+		RPCUtil.createRemoteService().execute(params, new AsyncCallback<Map<String, Object>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				System.out.println(caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(Map<String, Object> result) {
+				String message = result.get("message").toString();
+				System.out.println(message);
+			}
+		});
+	}
+
+	private void sendHttpRequestByGWT(String json) {
+		String actionUrl = GWT.getHostPageBaseURL() + "login";
+
+		// GWT Http
+		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, actionUrl);
+		requestBuilder.setHeader("Content-Type", "application/json");
+		try {
+			requestBuilder.sendRequest(json, new RequestCallback() {
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					if (response.getStatusCode() == 200) {
+						System.out.println("login success: " + response.getText());
+					} else {
+						System.out.println("login error, status code is: " + response.getStatusCode());
+					}
+				}
+
+				@Override
+				public void onError(Request request, Throwable exception) {
+					System.out.println("login error: " + exception.getMessage());
+				}
+			});
+		} catch (RequestException ex) {
+			System.out.println(ex.getMessage());
+		}
 	}
 }
