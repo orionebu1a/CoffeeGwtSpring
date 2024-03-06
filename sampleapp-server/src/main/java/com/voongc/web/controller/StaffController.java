@@ -1,11 +1,11 @@
 package com.voongc.web.controller;
 
 
-import com.voongc.service.CoffeeService;
-import com.voongc.service.entities.Cup;
-import com.voongc.service.entities.Good;
-import com.voongc.service.entities.Grade;
-import com.voongc.service.entities.Type;
+import com.voongc.entities.Cup;
+import com.voongc.entities.Good;
+import com.voongc.entities.Grade;
+import com.voongc.entities.Type;
+import com.voongc.services.CoffeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

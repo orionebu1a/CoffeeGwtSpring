@@ -2,30 +2,15 @@ package com.voongc;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.http.client.*;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.voongc.rpc.RPCRemoteService;
-import com.voongc.rpc.RPCRemoteServiceAsync;
+import com.google.gwt.user.client.ui.*;
+import com.voongc.DTO.CoffeeDto;
 import com.voongc.rpc.RPCUtil;
 import com.voongc.service.FieldVerifier;
-import com.voongc.service.GreetingResponse;
-import com.voongc.service.GreetingService;
-import com.voongc.service.GreetingServiceAsync;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +35,8 @@ public class App implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	private final TextBox nameField = new TextBox();
+
+	private GwtCoffeeService gwtCoffeeService = GWT.create(GwtCoffeeService.class);
 
 	public void onModuleLoad() {
 		final Button sendButton = new Button("Send");
@@ -104,7 +91,7 @@ public class App implements EntryPoint {
 			 * Fired when the user clicks on the sendButton.
 			 */
 			public void onClick(ClickEvent event) {
-				sendNameToServer();
+				makeCoffeeAndGetResult();
 			}
 
 			/**
@@ -112,14 +99,11 @@ public class App implements EntryPoint {
 			 */
 			public void onKeyUp(KeyUpEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					sendNameToServer();
+					makeCoffeeAndGetResult();
 				}
 			}
 
-			/**
-			 * Send the name from the nameField to the server and wait for a response.
-			 */
-			private void sendNameToServer() {
+			private void makeCoffeeAndGetResult() {
 				// First, we validate the input.
 				errorLabel.setText("");
 				String textToServer = nameField.getText();
@@ -137,7 +121,18 @@ public class App implements EntryPoint {
 //				params.put("username", textToServer);
 //				params.put("password", "CONST_PASSWORD");
 //				sendRequestByRPC(params);
-				sendHttpRequestByGWT(getFormJsonData());
+//				sendHttpRequestByGWT(getFormJsonData());
+				gwtCoffeeService.makeCoffee("latte", "medium", "0.5", 2, new GwtCoffeeService.CoffeeCallback() {
+					@Override
+					public void onSuccess(CoffeeDto coffeeDto) {
+						nameField.setText(coffeeDto.grade);
+					}
+
+					@Override
+					public void onFailure(Throwable throwable) {
+						// Handle the failure here
+					}
+				});
 			}
 		}
 
@@ -147,66 +142,4 @@ public class App implements EntryPoint {
 		nameField.addKeyUpHandler(handler);
 	}
 
-	private void sendRequestByRPC(Map<String, Object> params) {
-		RPCUtil.createRemoteService().execute(params, new AsyncCallback<Map<String, Object>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				System.out.println(caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(Map<String, Object> result) {
-				String message = result.get("message").toString();
-				System.out.println(message);
-			}
-		});
-	}
-
-	private String getFormJsonData() {
-		Map<String, Object> params = getFormData();
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("username", new JSONString(params.get("username").toString()));
-		jsonObject.put("password", new JSONString(params.get("password").toString()));
-		return jsonObject.toString();
-	}
-
-	private Map<String, Object> getFormData() {
-		//String username = usernameItem.getValueAsString();
-		//String password = passwordItem.getValueAsString();
-		String username = "admin";
-		String password = "123";
-
-		Map<String, Object> params = new HashMap<>();
-		params.put("username", username);
-		params.put("password", password);
-		return params;
-	}
-
-	private void sendHttpRequestByGWT(String json) {
-		String actionUrl = GWT.getHostPageBaseURL() + "login";
-
-		// GWT Http
-		RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, actionUrl);
-		requestBuilder.setHeader("Content-Type", "application/json");
-		try {
-			requestBuilder.sendRequest(json, new RequestCallback() {
-				@Override
-				public void onResponseReceived(Request request, Response response) {
-					if (response.getStatusCode() == 200) {
-						nameField.setText(response.getText());
-						System.out.println("login success: " + response.getText());
-					} else {
-						System.out.println("login error, status code is: " + response.getStatusCode());
-					}
-				}
-
-				@Override
-				public void onError(Request request, Throwable exception) {
-					System.out.println("login error: " + exception.getMessage());
-				}
-			});
-		} catch (RequestException ex) {
-			System.out.println(ex.getMessage());
-		}
-	}
 }

@@ -1,12 +1,9 @@
-package com.voongc.service.entities;
+package com.voongc.entities;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 
 @Entity

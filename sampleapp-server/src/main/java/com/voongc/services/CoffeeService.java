@@ -1,49 +1,27 @@
 package com.voongc.services;
 
+import com.voongc.DTO.CoffeeDto;
+import com.voongc.entities.*;
 import com.voongc.repositories.*;
-import com.voongc.service.CoffeeService;
-import com.voongc.service.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 
 @Service
-public class CoffeeServiceImpl implements CoffeeService {
-
+public class CoffeeService{
+    @Autowired
     private CupRepository cupRepository;
+    @Autowired
     private GradeRepository gradeRepository;
+    @Autowired
     private TypeRepository typeRepository;
+    @Autowired
     private GoodRepository goodRepository;
+    @Autowired
     private CoffeeRepository coffeeRepository;
-
-    @Autowired
-    public void setCupRepository(CupRepository cupRepository){
-        this.cupRepository = cupRepository;
-    }
-
-    @Autowired
-    public void setGradeRepository(GradeRepository gradeRepository){
-        this.gradeRepository = gradeRepository;
-    }
-
-    @Autowired
-    public void setTypeRepository(TypeRepository typeRepository){
-        this.typeRepository = typeRepository;
-    }
-
-    @Autowired
-    public void setGoodRepository(GoodRepository goodRepository){
-        this.goodRepository = goodRepository;
-    }
-
-    @Autowired
-    public void setCoffeeRepository(CoffeeRepository coffeeRepository){
-        this.coffeeRepository = coffeeRepository;
-    }
 
     public Grade refillGrade(String gradeName, int count) {
         Optional<Grade> optionalGrade = gradeRepository.findByName(gradeName);
@@ -108,11 +86,12 @@ public class CoffeeServiceImpl implements CoffeeService {
 
     public Type findOrAnyType(String typeName){
         Optional<Type> optionalType;
-        if (typeName.equals("any")) {
-            optionalType = typeRepository.findRandomType();
-        } else {
-            optionalType = typeRepository.findByName(typeName);
-        }
+        optionalType = typeRepository.findByName(typeName);
+//        if (typeName.equals("any")) {
+//            optionalType = typeRepository.findRandomType();
+//        } else {
+//            optionalType = typeRepository.findByName(typeName);
+//        }
         if (!optionalType.isPresent()) {
             throw new EntityNotFoundException();
         }
@@ -145,34 +124,38 @@ public class CoffeeServiceImpl implements CoffeeService {
         return optionalCup.get();
     }
 
-    public Coffee makeCoffee(String typeName, String gradeName, String cupName, int sugarAmount) {
-        Type type = findOrAnyType(typeName);
-        Grade grade = findOrAnyGrade(gradeName);
-        Cup cup = findOrAnyCup(cupName);
+    public CoffeeDto makeCoffee(String typeName, String gradeName, String cupName, int sugarAmount) {
+        Optional<Type> type = typeRepository.findByName(typeName);
+        String typeValue = type.isPresent() ? type.get().getName() : "NO_TYPE";
+        return new CoffeeDto(typeValue, gradeName, cupName, sugarAmount);
 
-        if(sugarAmount > 0){
-            Optional<Good> optionalGood = goodRepository.findByName("sugar");
-            if (!optionalGood.isPresent()) {
-                throw new EntityNotFoundException();
-            }
-            Good good = optionalGood.get();
-            if (good.getBalance() - sugarAmount < 0) {
-                throw new EntityNotFoundException();
-            } else {
-                good.setBalance(good.getBalance() - sugarAmount);
-            }
-        }
-
-        grade.setBalance(grade.getBalance() - 1);
-        cup.setBalance(cup.getBalance() - 1);
-
-        Coffee coffee = new Coffee();
-        coffee.setCup(cup);
-        coffee.setGrade(grade);
-        coffee.setType(type);
-        coffee.setSugar(sugarAmount);
-        coffee.setTime(LocalDateTime.now().getSecond());
-        return coffeeRepository.save(coffee);
+//        Type type = findOrAnyType(typeName);
+//        Grade grade = findOrAnyGrade(gradeName);
+//        Cup cup = findOrAnyCup(cupName);
+//
+//        if(sugarAmount > 0){
+//            Optional<Good> optionalGood = goodRepository.findByName("sugar");
+//            if (!optionalGood.isPresent()) {
+//                throw new EntityNotFoundException();
+//            }
+//            Good good = optionalGood.get();
+//            if (good.getBalance() - sugarAmount < 0) {
+//                throw new EntityNotFoundException();
+//            } else {
+//                good.setBalance(good.getBalance() - sugarAmount);
+//            }
+//        }
+//
+//        grade.setBalance(grade.getBalance() - 1);
+//        cup.setBalance(cup.getBalance() - 1);
+//
+//        Coffee coffee = new Coffee();
+//        coffee.setCup(cup);
+//        coffee.setGrade(grade);
+//        coffee.setType(type);
+//        coffee.setSugar(sugarAmount);
+//        coffee.setTime(LocalDateTime.now().getSecond());
+//        return coffeeRepository.save(coffee);
     }
 
     public void removeGood(String goodName) {

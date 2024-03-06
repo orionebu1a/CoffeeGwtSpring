@@ -1,5 +1,5 @@
 package com.voongc.repositories;
-import com.voongc.service.entities.Cup;
+import com.voongc.entities.Cup;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

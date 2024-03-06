@@ -1,8 +1,8 @@
-package com.voongc.service.entities;
-
+package com.voongc.entities;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import jakarta.persistence.*;
+
+import javax.persistence.*;
 
 
 @Entity
