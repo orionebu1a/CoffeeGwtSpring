@@ -61,8 +61,8 @@ public class App implements EntryPoint {
 		final Button makeButton = new Button("Make");
 		gradeField.setText("GRADE");
 		typeFiled.setText("TYPE");
-		sizeField.setText("0.4");
-		sugarField.setText("2");
+		sizeField.setText("SIZE");
+		sugarField.setText("SUGAR");
 		makeButton.addStyleName("sendButton");
 
 		RootPanel.get("gradeFieldContainer").add(gradeField);
@@ -120,6 +120,8 @@ public class App implements EntryPoint {
 	public void prepareAddCupPanel(){
 		cupSizeField = new TextBox();
 		cupBalanceField = new TextBox();
+		cupSizeField.setText("SIZE");
+		cupBalanceField.setText("BALANCE");
 
 		final Button addCupButton = new Button("AddCup");
 
@@ -171,6 +173,7 @@ public class App implements EntryPoint {
 	public void prepareAddTypePanel(){
 		typeNameField = new TextBox();
 		final Button addTypeButton = new Button("AddType");
+		typeNameField.setText("NAME");
 
 		addTypeButton.addStyleName("sendButton");
 
@@ -220,6 +223,9 @@ public class App implements EntryPoint {
 		gradeNameField = new TextBox();
 		gradeBalanceField = new TextBox();
 		gradeRoastField = new TextBox();
+		gradeNameField.setText("NAME");
+		gradeRoastField.setText("ROAST");
+		gradeBalanceField.setText("BALANCE");
 		final Button addGradeButton = new Button("AddGrade");
 		addGradeButton.addStyleName("sendButton");
 
@@ -273,6 +279,8 @@ public class App implements EntryPoint {
 	public void prepareAddGoodPanel(){
 		goodNameField = new TextBox();
 		goodBalanceField = new TextBox();
+		goodNameField.setText("NAME");
+		goodBalanceField.setText("BALANCE");
 		final Button addGoodButton = new Button("AddGood");
 		addGoodButton.addStyleName("sendButton");
 
@@ -329,10 +337,13 @@ public class App implements EntryPoint {
 		refillTo.setSelectedIndex(0);
 
 		refillText = new TextBox();
+		refillText.setText("NAME");
+
 		final Button refillButton = new Button("Refill");
 		refillButton.addStyleName("sendButton");
 
 		refillAmount = new TextBox();
+		refillAmount.setText("AMOUNT");
 
 		RootPanel.get("refillToContainer").add(refillTo);
 		RootPanel.get("refillToTextFieldContainer").add(refillText);
@@ -387,6 +398,7 @@ public class App implements EntryPoint {
 		removeTo.setSelectedIndex(0);
 
 		removeToText = new TextBox();
+		removeToText.setText("NAME");
 		final Button removeButton = new Button("Remove");
 		removeButton.addStyleName("sendButton");
 
