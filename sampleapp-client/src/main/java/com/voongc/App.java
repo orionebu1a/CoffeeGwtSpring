@@ -28,34 +28,38 @@ public class App implements EntryPoint {
 			+ "connection and try again.";
 
 	/**
-	 * Create a remote service proxy to talk to the server-side Greeting service.
-	 */
-
-	/**
 	 * This is the entry point method.
 	 */
-	private final TextBox nameField = new TextBox();
+	private TextBox gradeField;
+	private TextBox typeFiled;
+	private TextBox sizeField;
+	private TextBox sugarField;
 
 	private GwtCoffeeService gwtCoffeeService = GWT.create(GwtCoffeeService.class);
 
 	public void onModuleLoad() {
+		gradeField = new TextBox();
+		typeFiled = new TextBox();
+		sizeField = new TextBox();
+		sugarField = new TextBox();
+
 		final Button sendButton = new Button("Send");
 		//final TextBox nameField = new TextBox();
-		nameField.setText("GWT User");
+		gradeField.setText("GRADE");
+		typeFiled.setText("TYPE");
+		sizeField.setText("0.4");
+		sugarField.setText("2");
 		final Label errorLabel = new Label();
 
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
 
-		// Add the nameField and sendButton to the RootPanel
-		// Use RootPanel.get() to get the entire body element
-		RootPanel.get("nameFieldContainer").add(nameField);
+		RootPanel.get("gradeFieldContainer").add(gradeField);
+		RootPanel.get("typeFieldContainer").add(typeFiled);
+		RootPanel.get("sizeFieldContainer").add(sizeField);
+		RootPanel.get("sugarFieldContainer").add(sugarField);
 		RootPanel.get("sendButtonContainer").add(sendButton);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
-
-		// Focus the cursor on the name field when the app loads
-		nameField.setFocus(true);
-		nameField.selectAll();
 
 		// Create the popup dialog box
 		final DialogBox dialogBox = new DialogBox();
@@ -104,42 +108,39 @@ public class App implements EntryPoint {
 			}
 
 			private void makeCoffeeAndGetResult() {
-				// First, we validate the input.
-				errorLabel.setText("");
-				String textToServer = nameField.getText();
-				if (!FieldVerifier.isValidName(textToServer)) {
-					errorLabel.setText("Please enter at least four characters");
-					return;
-				}
-
-				// Then, we send the input to the server.
 				sendButton.setEnabled(false);
-				textToServerLabel.setText(textToServer);
-				serverResponseLabel.setText("");
 
-//				Map<String, Object> params = new HashMap<>();
-//				params.put("username", textToServer);
-//				params.put("password", "CONST_PASSWORD");
-//				sendRequestByRPC(params);
-//				sendHttpRequestByGWT(getFormJsonData());
-				gwtCoffeeService.makeCoffee("latte", "medium", "0.5", 2, new GwtCoffeeService.CoffeeCallback() {
+				gwtCoffeeService.makeCoffee(typeFiled.getText(), gradeField.getText(), sizeField.getText(), Integer.parseInt(sugarField.getText()), new GwtCoffeeService.CoffeeCallback() {
 					@Override
 					public void onSuccess(CoffeeDto coffeeDto) {
-						nameField.setText(coffeeDto.grade);
+						typeFiled.setText(coffeeDto.type);
+						gradeField.setText(coffeeDto.grade);
+						sizeField.setText(coffeeDto.size);
+						sugarField.setText(String.valueOf(coffeeDto.sugar));
+						sendButton.setEnabled(true);
 					}
 
 					@Override
 					public void onFailure(Throwable throwable) {
-						// Handle the failure here
+						typeFiled.setText("FAILURE");
+						gradeField.setText("FAILURE");
+						sizeField.setText("FAILURE");
+						sugarField.setText("FAILURE");
+						sendButton.setEnabled(true);
 					}
 				});
+
+
 			}
 		}
 
 		// Add a handler to send the name to the server
 		MyHandler handler = new MyHandler();
 		sendButton.addClickHandler(handler);
-		nameField.addKeyUpHandler(handler);
+		typeFiled.addKeyUpHandler(handler);
+		gradeField.addKeyUpHandler(handler);
+		sizeField.addKeyUpHandler(handler);
+		sugarField.addKeyUpHandler(handler);
 	}
 
 }

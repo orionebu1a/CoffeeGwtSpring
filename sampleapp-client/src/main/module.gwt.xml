@@ -9,4 +9,6 @@
 
   <entry-point class="com.voongc.App" />
 
+  <stylesheet src="sampleapp.css" />
+
 </module>
