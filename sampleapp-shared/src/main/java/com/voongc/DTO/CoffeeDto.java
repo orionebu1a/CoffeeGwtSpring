@@ -12,4 +12,7 @@ public class CoffeeDto {
         this.size = size;
         this.sugar = sugar;
     }
+
+    public CoffeeDto() {
+    }
 }

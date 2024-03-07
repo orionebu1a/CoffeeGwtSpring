@@ -8,4 +8,8 @@ public class CupDto {
         this.value = value;
         this.balance = balance;
     }
+
+    public CupDto(){
+
+    }
 }

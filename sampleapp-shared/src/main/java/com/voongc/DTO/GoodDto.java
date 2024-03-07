@@ -8,4 +8,8 @@ public class GoodDto {
         this.name = name;
         this.balance = balance;
     }
+
+    public GoodDto(){
+
+    }
 }

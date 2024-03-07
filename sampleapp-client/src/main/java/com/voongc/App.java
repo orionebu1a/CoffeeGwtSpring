@@ -3,17 +3,8 @@ package com.voongc;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.http.client.*;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import com.voongc.DTO.CoffeeDto;
-import com.voongc.rpc.RPCUtil;
-import com.voongc.service.FieldVerifier;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.voongc.DTO.*;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -34,60 +25,46 @@ public class App implements EntryPoint {
 	private TextBox typeFiled;
 	private TextBox sizeField;
 	private TextBox sugarField;
+	private TextBox cupSizeField;
+	private TextBox cupBalanceField;
+	private TextBox typeNameField;
+	private TextBox gradeNameField;
+	private TextBox gradeRoastField;
+	private TextBox gradeBalanceField;
+	private TextBox goodNameField;
+	private TextBox goodBalanceField;
 
 	private GwtCoffeeService gwtCoffeeService = GWT.create(GwtCoffeeService.class);
 
 	public void onModuleLoad() {
+		prepareMakeCoffeePanel();
+		prepareAddCupPanel();
+		prepareAddTypePanel();
+		prepareAddGradePanel();
+		prepareAddGoodPanel();
+		prepareRefillPanel();
+		prepareRefillPanel();
+		prepareRemovePanel();
+	}
+
+	public void prepareMakeCoffeePanel(){
 		gradeField = new TextBox();
 		typeFiled = new TextBox();
 		sizeField = new TextBox();
 		sugarField = new TextBox();
 
-		final Button sendButton = new Button("Send");
-		//final TextBox nameField = new TextBox();
+		final Button makeButton = new Button("Make");
 		gradeField.setText("GRADE");
 		typeFiled.setText("TYPE");
 		sizeField.setText("0.4");
 		sugarField.setText("2");
-		final Label errorLabel = new Label();
-
-		// We can add style names to widgets
-		sendButton.addStyleName("sendButton");
+		makeButton.addStyleName("sendButton");
 
 		RootPanel.get("gradeFieldContainer").add(gradeField);
 		RootPanel.get("typeFieldContainer").add(typeFiled);
 		RootPanel.get("sizeFieldContainer").add(sizeField);
 		RootPanel.get("sugarFieldContainer").add(sugarField);
-		RootPanel.get("sendButtonContainer").add(sendButton);
-		RootPanel.get("errorLabelContainer").add(errorLabel);
-
-		// Create the popup dialog box
-		final DialogBox dialogBox = new DialogBox();
-		dialogBox.setText("Remote Procedure Call");
-		dialogBox.setAnimationEnabled(true);
-		final Button closeButton = new Button("Close");
-		// We can set the id of a widget by accessing its Element
-		closeButton.getElement().setId("closeButton");
-		final Label textToServerLabel = new Label();
-		final HTML serverResponseLabel = new HTML();
-		VerticalPanel dialogVPanel = new VerticalPanel();
-		dialogVPanel.addStyleName("dialogVPanel");
-		dialogVPanel.add(new HTML("<b>Sending name to the server:</b>"));
-		dialogVPanel.add(textToServerLabel);
-		dialogVPanel.add(new HTML("<br><b>Server replies:</b>"));
-		dialogVPanel.add(serverResponseLabel);
-		dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-		dialogVPanel.add(closeButton);
-		dialogBox.setWidget(dialogVPanel);
-
-		// Add a handler to close the DialogBox
-		closeButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				dialogBox.hide();
-				sendButton.setEnabled(true);
-				sendButton.setFocus(true);
-			}
-		});
+		RootPanel.get("sendButtonContainer").add(makeButton);
 
 		// Create a handler for the sendButton and nameField
 		class MyHandler implements ClickHandler, KeyUpHandler {
@@ -102,13 +79,11 @@ public class App implements EntryPoint {
 			 * Fired when the user types in the nameField.
 			 */
 			public void onKeyUp(KeyUpEvent event) {
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					makeCoffeeAndGetResult();
-				}
+
 			}
 
 			private void makeCoffeeAndGetResult() {
-				sendButton.setEnabled(false);
+				makeButton.setEnabled(false);
 
 				gwtCoffeeService.makeCoffee(typeFiled.getText(), gradeField.getText(), sizeField.getText(), Integer.parseInt(sugarField.getText()), new GwtCoffeeService.CoffeeCallback() {
 					@Override
@@ -117,7 +92,7 @@ public class App implements EntryPoint {
 						gradeField.setText(coffeeDto.grade);
 						sizeField.setText(coffeeDto.size);
 						sugarField.setText(String.valueOf(coffeeDto.sugar));
-						sendButton.setEnabled(true);
+						makeButton.setEnabled(true);
 					}
 
 					@Override
@@ -126,21 +101,225 @@ public class App implements EntryPoint {
 						gradeField.setText("FAILURE");
 						sizeField.setText("FAILURE");
 						sugarField.setText("FAILURE");
-						sendButton.setEnabled(true);
+						makeButton.setEnabled(true);
 					}
 				});
 
 
 			}
 		}
-
-		// Add a handler to send the name to the server
 		MyHandler handler = new MyHandler();
-		sendButton.addClickHandler(handler);
-		typeFiled.addKeyUpHandler(handler);
-		gradeField.addKeyUpHandler(handler);
-		sizeField.addKeyUpHandler(handler);
-		sugarField.addKeyUpHandler(handler);
+		makeButton.addClickHandler(handler);
+	}
+
+	public void prepareAddCupPanel(){
+		cupSizeField = new TextBox();
+		cupBalanceField = new TextBox();
+
+		final Button addCupButton = new Button("AddCup");
+
+		addCupButton.addStyleName("sendButton");
+
+		RootPanel.get("cupSizeFieldContainer").add(cupSizeField);
+		RootPanel.get("cupBalanceFieldContainer").add(cupBalanceField);
+		RootPanel.get("addCupButtonContainer").add(addCupButton);
+
+		// Create a handler for the sendButton and nameField
+		class MyHandler implements ClickHandler, KeyUpHandler {
+			/**
+			 * Fired when the user clicks on the sendButton.
+			 */
+			public void onClick(ClickEvent event) {
+				addCup();
+			}
+
+			/**
+			 * Fired when the user types in the nameField.
+			 */
+			public void onKeyUp(KeyUpEvent event) {
+			}
+
+			private void addCup(){
+				addCupButton.setEnabled(false);
+
+				gwtCoffeeService.addCup(new CupDto(Float.parseFloat(cupSizeField.getText()), Integer.parseInt(cupBalanceField.getText())), new GwtCoffeeService.AddCallback() {
+					@Override
+					public void onSuccess() {
+						cupSizeField.setText("");
+						cupBalanceField.setText("");
+						addCupButton.setEnabled(true);
+					}
+
+					@Override
+					public void onFailure(Throwable throwable) {
+						addCupButton.setEnabled(true);
+					}
+				});
+
+
+			}
+		}
+		MyHandler handler = new MyHandler();
+		addCupButton.addClickHandler(handler);
+	}
+
+	public void prepareAddTypePanel(){
+		typeNameField = new TextBox();
+		final Button addTypeButton = new Button("AddType");
+
+		addTypeButton.addStyleName("sendButton");
+
+		RootPanel.get("typeNameFieldContainer").add(typeNameField);
+		RootPanel.get("addTypeButtonContainer").add(addTypeButton);
+
+		// Create a handler for the sendButton and nameField
+		class MyHandler implements ClickHandler, KeyUpHandler {
+			/**
+			 * Fired when the user clicks on the sendButton.
+			 */
+			public void onClick(ClickEvent event) {
+				addType();
+			}
+
+			/**
+			 * Fired when the user types in the nameField.
+			 */
+
+			private void addType(){
+				addTypeButton.setEnabled(false);
+
+				gwtCoffeeService.addType(new TypeDto(typeNameField.getText()), new GwtCoffeeService.AddCallback() {
+					@Override
+					public void onSuccess() {
+						typeNameField.setText("");
+						addTypeButton.setEnabled(true);
+					}
+
+					@Override
+					public void onFailure(Throwable throwable) {
+						addTypeButton.setEnabled(true);
+					}
+				});
+
+
+			}
+			@Override
+			public void onKeyUp(KeyUpEvent keyUpEvent) {
+			}
+		}
+		MyHandler handler = new MyHandler();
+		addTypeButton.addClickHandler(handler);
+	}
+
+	public void prepareAddGradePanel(){
+		gradeNameField = new TextBox();
+		gradeBalanceField = new TextBox();
+		gradeRoastField = new TextBox();
+		final Button addGradeButton = new Button("AddGrade");
+		addGradeButton.addStyleName("sendButton");
+
+		RootPanel.get("gradeNameFieldContainer").add(gradeNameField);
+		RootPanel.get("gradeBalanceFieldContainer").add(gradeBalanceField);
+		RootPanel.get("gradeRoastFieldContainer").add(gradeRoastField);
+		RootPanel.get("addGradeButtonContainer").add(addGradeButton);
+
+		// Create a handler for the sendButton and nameField
+		class MyHandler implements ClickHandler, KeyUpHandler {
+			/**
+			 * Fired when the user clicks on the sendButton.
+			 */
+			public void onClick(ClickEvent event) {
+				addGrade();
+			}
+
+			/**
+			 * Fired when the user types in the nameField.
+			 */
+
+			private void addGrade() {
+				addGradeButton.setEnabled(false);
+				gwtCoffeeService.addGrade(new GradeDto(gradeNameField.getText(),
+						Integer.parseInt(gradeRoastField.getText()),
+						Integer.parseInt(gradeBalanceField.getText())), new GwtCoffeeService.AddCallback() {
+					@Override
+					public void onSuccess() {
+						gradeNameField.setText("");
+						gradeRoastField.setText("");
+						gradeBalanceField.setText("");
+						addGradeButton.setEnabled(true);
+					}
+
+					@Override
+					public void onFailure(Throwable throwable) {
+						addGradeButton.setEnabled(true);
+					}
+				});
+
+
+			}
+			@Override
+			public void onKeyUp(KeyUpEvent keyUpEvent) {
+			}
+		}
+		MyHandler handler = new MyHandler();
+		addGradeButton.addClickHandler(handler);
+	}
+
+	public void prepareAddGoodPanel(){
+		goodNameField = new TextBox();
+		goodBalanceField = new TextBox();
+		final Button addGoodButton = new Button("AddGood");
+		addGoodButton.addStyleName("sendButton");
+
+		RootPanel.get("goodNameFieldContainer").add(goodNameField);
+		RootPanel.get("goodBalanceFieldContainer").add(goodBalanceField);
+		RootPanel.get("addGoodButtonContainer").add(addGoodButton);
+
+		// Create a handler for the sendButton and nameField
+		class MyHandler implements ClickHandler, KeyUpHandler {
+			/**
+			 * Fired when the user clicks on the sendButton.
+			 */
+			public void onClick(ClickEvent event) {
+				addGood();
+			}
+
+			/**
+			 * Fired when the user types in the nameField.
+			 */
+
+			private void addGood() {
+				addGoodButton.setEnabled(false);
+				gwtCoffeeService.addGood(new GoodDto(goodNameField.getText(), Integer.parseInt(goodBalanceField.getText())), new GwtCoffeeService.AddCallback() {
+					@Override
+					public void onSuccess() {
+						goodNameField.setText("");
+						goodBalanceField.setText("");
+						addGoodButton.setEnabled(true);
+					}
+
+					@Override
+					public void onFailure(Throwable throwable) {
+						addGoodButton.setEnabled(true);
+					}
+				});
+
+
+			}
+			@Override
+			public void onKeyUp(KeyUpEvent keyUpEvent) {
+			}
+		}
+		MyHandler handler = new MyHandler();
+		addGoodButton.addClickHandler(handler);
+	}
+
+	public void prepareRefillPanel(){
+
+	}
+
+	public void prepareRemovePanel(){
+
 	}
 
 }

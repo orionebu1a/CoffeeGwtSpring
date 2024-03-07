@@ -6,4 +6,7 @@ public class TypeDto {
     public TypeDto(String name) {
         this.name = name;
     }
+
+    public TypeDto(){
+    }
 }

@@ -7,9 +7,6 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
 import com.voongc.DTO.*;
 
-import java.util.Map;
-import java.util.Optional;
-
 
 public class GwtCoffeeService {
     public interface CoffeeCallback {
@@ -77,7 +74,7 @@ public class GwtCoffeeService {
     public void addCup(CupDto cup, AddCallback callback) {
         String path = "api/staff/cup/add";
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", new JSONString(String.valueOf(cup.value)));
+        jsonObject.put("value", new JSONString(String.valueOf(cup.value)));
         jsonObject.put("balance", new JSONString(String.valueOf(cup.balance)));
         addingRequest(callback, path, jsonObject);
     }

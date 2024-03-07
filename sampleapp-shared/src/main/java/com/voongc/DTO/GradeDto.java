@@ -10,4 +10,8 @@ public class GradeDto {
         this.roast = roast;
         this.balance = balance;
     }
+
+    public GradeDto(){
+
+    }
 }

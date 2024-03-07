@@ -1,6 +1,10 @@
 package com.voongc.web.controller;
 
 
+import com.voongc.DTO.CupDto;
+import com.voongc.DTO.GoodDto;
+import com.voongc.DTO.GradeDto;
+import com.voongc.DTO.TypeDto;
 import com.voongc.entities.Cup;
 import com.voongc.entities.Good;
 import com.voongc.entities.Grade;
@@ -20,17 +24,18 @@ public class StaffController {
     private CoffeeService coffeeService;
 
     @PostMapping("/type/add")
-    public ResponseEntity<Type> createGrade(
-            @RequestBody Type type
+    public ResponseEntity<TypeDto> createGrade(
+            @RequestBody TypeDto type
     ) {
+        Type newType = new Type(type.name);
         Type createdType;
         try{
-            createdType = coffeeService.addType(type);
+            createdType = coffeeService.addType(newType);
         }
         catch (IllegalArgumentException e){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(createdType);
+        return ResponseEntity.ok(type);
     }
 
     @PostMapping("/type/remove")
@@ -47,7 +52,7 @@ public class StaffController {
     }
 
     @GetMapping("/cup/refill")
-    public ResponseEntity<Cup> cupRefill(
+    public ResponseEntity<CupDto> cupRefill(
             @RequestParam float value,
             @RequestParam int amount
     ) {
@@ -58,21 +63,22 @@ public class StaffController {
         catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(cup);
+        return ResponseEntity.ok(new CupDto(cup.getValue(), cup.getBalance()));
     }
 
     @PostMapping("/cup/add")
-    public ResponseEntity<Cup> createCup(
-            @RequestBody Cup cup
+    public ResponseEntity<CupDto> createCup(
+            @RequestBody CupDto cup
     ) {
+        Cup newCup = new Cup(cup.value, cup.balance);
         Cup createdCup;
         try{
-            createdCup = coffeeService.addCup(cup);
+            createdCup = coffeeService.addCup(newCup);
         }
         catch (IllegalArgumentException e){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(createdCup);
+        return ResponseEntity.ok(cup);
     }
 
     @PostMapping("/cup/remove")
@@ -89,7 +95,7 @@ public class StaffController {
     }
 
     @GetMapping("/grade/refill")
-    public ResponseEntity<Grade> gradeRefill(
+    public ResponseEntity<GradeDto> gradeRefill(
             @RequestParam String gradeName,
             @RequestParam int amount
     ) {
@@ -100,21 +106,22 @@ public class StaffController {
         catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(grade);
+        return ResponseEntity.ok(new GradeDto(grade.getName(), grade.getRoast(), grade.getBalance()));
     }
 
     @PostMapping("/grade/add")
-    public ResponseEntity<Grade> createGrade(
-            @RequestBody Grade grade
+    public ResponseEntity<GradeDto> createGrade(
+            @RequestBody GradeDto grade
     ) {
+        Grade newGrade = new Grade(grade.name, grade.roast, grade.balance);
         Grade createdGrade;
         try{
-            createdGrade = coffeeService.addGrade(grade);
+            createdGrade = coffeeService.addGrade(newGrade);
         }
         catch (IllegalArgumentException e){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(createdGrade);
+        return ResponseEntity.ok(grade);
     }
 
     @PostMapping("/grade/remove")
@@ -131,7 +138,7 @@ public class StaffController {
     }
 
     @GetMapping("/good/refill")
-    public ResponseEntity<Good> goodRefill(
+    public ResponseEntity<GoodDto> goodRefill(
             @RequestParam String goodName,
             @RequestParam int amount
     ) {
@@ -142,21 +149,22 @@ public class StaffController {
         catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(good);
+        return ResponseEntity.ok(new GoodDto(good.getName(), good.getBalance()));
     }
 
     @PostMapping("/good/add")
-    public ResponseEntity<Good> createGood(
-            @RequestBody Good good
+    public ResponseEntity<GoodDto> createGood(
+            @RequestBody GoodDto good
     ) {
+        Good newGood = new Good(good.name, good.balance);
         Good createdGood;
         try{
-            createdGood = coffeeService.addGood(good);
+            createdGood = coffeeService.addGood(newGood);
         }
         catch (IllegalAccessError e){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(createdGood);
+        return ResponseEntity.ok(good);
     }
 
     @PostMapping("/good/remove")

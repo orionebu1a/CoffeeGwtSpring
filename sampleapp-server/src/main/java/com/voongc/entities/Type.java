@@ -14,12 +14,9 @@ public class Type implements IsSerializable {
     public Type() {
     }
 
-    // All-args constructor
     public Type(String name) {
         this.name = name;
     }
-
-    // Getters and Setters
 
     public String getName() {
         return name;
