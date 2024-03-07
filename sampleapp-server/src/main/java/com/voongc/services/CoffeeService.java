@@ -148,15 +148,15 @@ public class CoffeeService{
         cup.setBalance(cup.getBalance() - 1);
 
         Coffee coffee = new Coffee();
-        coffee.setCup(cup);
-        coffee.setGrade(grade);
-        coffee.setType(type);
+        coffee.setCup(String.valueOf(cup.getValue()));
+        coffee.setGrade(grade.getName());
+        coffee.setType(type.getName());
         coffee.setSugar(sugarAmount);
         coffee.setTime(LocalDateTime.now().getSecond());
         Coffee savedCoffee = coffeeRepository.save(coffee);
-        return new CoffeeDto(savedCoffee.getType().getName(),
-                savedCoffee.getGrade().getName(),
-                String.valueOf(savedCoffee.getCup().getValue()),
+        return new CoffeeDto(savedCoffee.getType(),
+                savedCoffee.getGrade(),
+                String.valueOf(savedCoffee.getCup()),
                 savedCoffee.getSugar());
     }
 

@@ -11,17 +11,11 @@ public class Coffee implements IsSerializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "cup_value")
-    private Cup cup;
+    private String cup;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "grade_name")
-    private Grade grade;
+    private String grade;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "type_name")
-    private Type type;
+    private String type;
 
     private int sugar;
 
@@ -31,7 +25,7 @@ public class Coffee implements IsSerializable {
     }
 
     // All-args constructor
-    public Coffee(long id, Cup cup, Grade grade, Type type, int sugar, int time) {
+    public Coffee(long id, String cup, String grade, String type, int sugar, int time) {
         this.id = id;
         this.cup = cup;
         this.grade = grade;
@@ -50,27 +44,27 @@ public class Coffee implements IsSerializable {
         this.id = id;
     }
 
-    public Cup getCup() {
+    public String getCup() {
         return cup;
     }
 
-    public void setCup(Cup cup) {
+    public void setCup(String cup) {
         this.cup = cup;
     }
 
-    public Grade getGrade() {
+    public String getGrade() {
         return grade;
     }
 
-    public void setGrade(Grade grade) {
+    public void setGrade(String grade) {
         this.grade = grade;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -89,5 +83,4 @@ public class Coffee implements IsSerializable {
     public void setTime(int time) {
         this.time = time;
     }
-
 }
