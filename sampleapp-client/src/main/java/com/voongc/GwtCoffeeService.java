@@ -33,9 +33,10 @@ public class GwtCoffeeService {
         void onFailure(Throwable throwable);
     }
 
-    public void refill(String refill, int amount, RefillCallback callback) {
+    public void refill(String refill, String name, int amount, RefillCallback callback) {
         String path = "api/staff/" + refill + "/refill";
         StringBuilder urlBuilder = new StringBuilder(GWT.getHostPageBaseURL() + path);
+        urlBuilder.append("?name=").append(URL.encodeQueryString(String.valueOf(amount)));
         urlBuilder.append("?amount=").append(URL.encodeQueryString(String.valueOf(amount)));
         String actionUrl = urlBuilder.toString();
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, actionUrl);

@@ -3,6 +3,7 @@ package com.voongc;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.*;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.ui.*;
 import com.voongc.DTO.*;
 
@@ -33,6 +34,11 @@ public class App implements EntryPoint {
 	private TextBox gradeBalanceField;
 	private TextBox goodNameField;
 	private TextBox goodBalanceField;
+	private ListBox removeTo;
+	private TextBox removeToText;
+	private ListBox refillTo;
+	private TextBox refillText;
+	private TextBox refillAmount;
 
 	private GwtCoffeeService gwtCoffeeService = GWT.create(GwtCoffeeService.class);
 
@@ -42,7 +48,6 @@ public class App implements EntryPoint {
 		prepareAddTypePanel();
 		prepareAddGradePanel();
 		prepareAddGoodPanel();
-		prepareRefillPanel();
 		prepareRefillPanel();
 		prepareRemovePanel();
 	}
@@ -316,10 +321,116 @@ public class App implements EntryPoint {
 
 	public void prepareRefillPanel(){
 
+		refillTo = new ListBox();
+		refillTo.addItem("type");
+		refillTo.addItem("grade");
+		refillTo.addItem("good");
+		refillTo.addItem("cup");
+		refillTo.setSelectedIndex(0);
+
+		refillText = new TextBox();
+		final Button refillButton = new Button("Refill");
+		refillButton.addStyleName("sendButton");
+
+		refillAmount = new TextBox();
+
+		RootPanel.get("refillToContainer").add(refillTo);
+		RootPanel.get("refillToTextFieldContainer").add(refillText);
+		RootPanel.get("refillAmountContainer").add(refillAmount);
+		RootPanel.get("refillButtonContainer").add(refillButton);
+
+		// Create a handler for the sendButton and nameField
+		class MyHandler implements ClickHandler, KeyUpHandler {
+			/**
+			 * Fired when the user clicks on the sendButton.
+			 */
+			public void onClick(ClickEvent event) {
+				refill();
+			}
+
+			/**
+			 * Fired when the user types in the nameField.
+			 */
+
+			private void refill() {
+				refillButton.setEnabled(false);
+				gwtCoffeeService.refill(refillTo.getSelectedItemText(), refillText.getText(), Integer.parseInt(refillAmount.getText()), new GwtCoffeeService.RefillCallback() {
+
+					@Override
+					public void onSuccess(JSONObject jsonValue) {
+						refillText.setText("");
+						refillButton.setEnabled(true);
+					}
+
+					@Override
+					public void onFailure(Throwable throwable) {
+						refillButton.setEnabled(true);
+					}
+				});
+
+
+			}
+			@Override
+			public void onKeyUp(KeyUpEvent keyUpEvent) {
+			}
+		}
+		MyHandler handler = new MyHandler();
+		refillButton.addClickHandler(handler);
 	}
 
 	public void prepareRemovePanel(){
+		removeTo = new ListBox();
+		removeTo.addItem("type");
+		removeTo.addItem("grade");
+		removeTo.addItem("good");
+		removeTo.addItem("cup");
+		removeTo.setSelectedIndex(0);
 
+		removeToText = new TextBox();
+		final Button removeButton = new Button("Remove");
+		removeButton.addStyleName("sendButton");
+
+		RootPanel.get("removeToContainer").add(removeTo);
+		RootPanel.get("removeToTextFieldContainer").add(removeToText);
+		RootPanel.get("removeButtonContainer").add(removeButton);
+
+		// Create a handler for the sendButton and nameField
+		class MyHandler implements ClickHandler, KeyUpHandler {
+			/**
+			 * Fired when the user clicks on the sendButton.
+			 */
+			public void onClick(ClickEvent event) {
+				remove();
+			}
+
+			/**
+			 * Fired when the user types in the nameField.
+			 */
+
+			private void remove() {
+				removeButton.setEnabled(false);
+				gwtCoffeeService.remove(removeTo.getSelectedItemText(), removeToText.getText(), new GwtCoffeeService.RemoveCallback() {
+
+					@Override
+					public void onSuccess(JSONObject jsonValue) {
+						removeToText.setText("");
+						removeButton.setEnabled(true);
+					}
+
+					@Override
+					public void onFailure(Throwable throwable) {
+						removeButton.setEnabled(true);
+					}
+				});
+
+
+			}
+			@Override
+			public void onKeyUp(KeyUpEvent keyUpEvent) {
+			}
+		}
+		MyHandler handler = new MyHandler();
+		removeButton.addClickHandler(handler);
 	}
 
 }

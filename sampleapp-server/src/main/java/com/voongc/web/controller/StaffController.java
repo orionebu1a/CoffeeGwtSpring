@@ -12,6 +12,7 @@ import com.voongc.entities.Type;
 import com.voongc.services.CoffeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -38,6 +39,7 @@ public class StaffController {
         return ResponseEntity.ok(type);
     }
 
+    @Transactional
     @PostMapping("/type/remove")
     public ResponseEntity<String> removeType(
             @RequestParam String name
@@ -81,6 +83,7 @@ public class StaffController {
         return ResponseEntity.ok(cup);
     }
 
+    @Transactional
     @PostMapping("/cup/remove")
     public ResponseEntity<String> removeCup(
             @RequestParam String name
@@ -96,12 +99,12 @@ public class StaffController {
 
     @GetMapping("/grade/refill")
     public ResponseEntity<GradeDto> gradeRefill(
-            @RequestParam String gradeName,
+            @RequestParam String name,
             @RequestParam int amount
     ) {
         Grade grade;
         try{
-            grade = coffeeService.refillGrade(gradeName, amount);
+            grade = coffeeService.refillGrade(name, amount);
         }
         catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
@@ -124,6 +127,7 @@ public class StaffController {
         return ResponseEntity.ok(grade);
     }
 
+    @Transactional
     @PostMapping("/grade/remove")
     public ResponseEntity<String> removeGrade(
             @RequestParam String name
@@ -139,12 +143,12 @@ public class StaffController {
 
     @GetMapping("/good/refill")
     public ResponseEntity<GoodDto> goodRefill(
-            @RequestParam String goodName,
+            @RequestParam String name,
             @RequestParam int amount
     ) {
         Good good;
         try{
-            good = coffeeService.refillGood(goodName, amount);
+            good = coffeeService.refillGood(name, amount);
         }
         catch (EntityNotFoundException e){
             return ResponseEntity.notFound().build();
@@ -167,6 +171,7 @@ public class StaffController {
         return ResponseEntity.ok(good);
     }
 
+    @Transactional
     @PostMapping("/good/remove")
     public ResponseEntity<String> removeGood(
             @RequestParam String name

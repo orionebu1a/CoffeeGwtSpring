@@ -5,6 +5,7 @@ import com.voongc.entities.*;
 import com.voongc.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -153,12 +154,13 @@ public class CoffeeService{
         coffee.setSugar(sugarAmount);
         coffee.setTime(LocalDateTime.now().getSecond());
         Coffee savedCoffee = coffeeRepository.save(coffee);
-        return new CoffeeDto(savedCoffee.getType().toString(),
-                savedCoffee.getGrade().toString(),
-                savedCoffee.getCup().toString(),
+        return new CoffeeDto(savedCoffee.getType().getName(),
+                savedCoffee.getGrade().getName(),
+                String.valueOf(savedCoffee.getCup().getValue()),
                 savedCoffee.getSugar());
     }
 
+    @Transactional
     public void removeGood(String goodName) {
         if(!goodRepository.findByName(goodName).isPresent()){
             throw new IllegalArgumentException();
@@ -166,6 +168,7 @@ public class CoffeeService{
         goodRepository.deleteByName(goodName);
     }
 
+    @Transactional
     public void removeGrade(String gradeName) {
         if(!gradeRepository.findByName(gradeName).isPresent()){
             throw new IllegalArgumentException();
@@ -173,6 +176,7 @@ public class CoffeeService{
         gradeRepository.deleteByName(gradeName);
     }
 
+    @Transactional
     public void removeCup(String cupName) {
         float value = Float.parseFloat(cupName);
         if(!cupRepository.findByValue(value).isPresent()){
@@ -181,6 +185,7 @@ public class CoffeeService{
         cupRepository.deleteByValue(value);
     }
 
+    @Transactional
     public void removeType(String typeName) {
         if(!typeRepository.findByName(typeName).isPresent()){
             throw new IllegalArgumentException();
