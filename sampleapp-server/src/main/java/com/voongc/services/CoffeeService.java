@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 
@@ -125,37 +126,37 @@ public class CoffeeService{
     }
 
     public CoffeeDto makeCoffee(String typeName, String gradeName, String cupName, int sugarAmount) {
-        Optional<Type> type = typeRepository.findByName(typeName);
-        String typeValue = type.isPresent() ? type.get().getName() : "NO_TYPE";
-        return new CoffeeDto(typeValue, gradeName, cupName, sugarAmount);
+        Type type = findOrAnyType(typeName);
+        Grade grade = findOrAnyGrade(gradeName);
+        Cup cup = findOrAnyCup(cupName);
 
-//        Type type = findOrAnyType(typeName);
-//        Grade grade = findOrAnyGrade(gradeName);
-//        Cup cup = findOrAnyCup(cupName);
-//
-//        if(sugarAmount > 0){
-//            Optional<Good> optionalGood = goodRepository.findByName("sugar");
-//            if (!optionalGood.isPresent()) {
-//                throw new EntityNotFoundException();
-//            }
-//            Good good = optionalGood.get();
-//            if (good.getBalance() - sugarAmount < 0) {
-//                throw new EntityNotFoundException();
-//            } else {
-//                good.setBalance(good.getBalance() - sugarAmount);
-//            }
-//        }
-//
-//        grade.setBalance(grade.getBalance() - 1);
-//        cup.setBalance(cup.getBalance() - 1);
-//
-//        Coffee coffee = new Coffee();
-//        coffee.setCup(cup);
-//        coffee.setGrade(grade);
-//        coffee.setType(type);
-//        coffee.setSugar(sugarAmount);
-//        coffee.setTime(LocalDateTime.now().getSecond());
-//        return coffeeRepository.save(coffee);
+        if(sugarAmount > 0){
+            Optional<Good> optionalGood = goodRepository.findByName("sugar");
+            if (!optionalGood.isPresent()) {
+                throw new EntityNotFoundException();
+            }
+            Good good = optionalGood.get();
+            if (good.getBalance() - sugarAmount < 0) {
+                throw new EntityNotFoundException();
+            } else {
+                good.setBalance(good.getBalance() - sugarAmount);
+            }
+        }
+
+        grade.setBalance(grade.getBalance() - 1);
+        cup.setBalance(cup.getBalance() - 1);
+
+        Coffee coffee = new Coffee();
+        coffee.setCup(cup);
+        coffee.setGrade(grade);
+        coffee.setType(type);
+        coffee.setSugar(sugarAmount);
+        coffee.setTime(LocalDateTime.now().getSecond());
+        Coffee savedCoffee = coffeeRepository.save(coffee);
+        return new CoffeeDto(savedCoffee.getType().toString(),
+                savedCoffee.getGrade().toString(),
+                savedCoffee.getCup().toString(),
+                savedCoffee.getSugar());
     }
 
     public void removeGood(String goodName) {
@@ -172,7 +173,8 @@ public class CoffeeService{
         gradeRepository.deleteByName(gradeName);
     }
 
-    public void removeCup(float value) {
+    public void removeCup(String cupName) {
+        float value = Float.parseFloat(cupName);
         if(!cupRepository.findByValue(value).isPresent()){
             throw new IllegalArgumentException();
         }

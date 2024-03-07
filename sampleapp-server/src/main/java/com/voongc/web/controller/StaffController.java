@@ -35,10 +35,10 @@ public class StaffController {
 
     @PostMapping("/type/remove")
     public ResponseEntity<String> removeType(
-            @RequestParam String typeName
+            @RequestParam String name
     ) {
         try{
-            coffeeService.removeType(typeName);
+            coffeeService.removeType(name);
         }
         catch (IllegalArgumentException e){
             return ResponseEntity.notFound().build();
@@ -77,10 +77,10 @@ public class StaffController {
 
     @PostMapping("/cup/remove")
     public ResponseEntity<String> removeCup(
-            @RequestParam float value
+            @RequestParam String name
     ) {
         try{
-            coffeeService.removeCup(value);
+            coffeeService.removeCup(name);
         }
         catch (IllegalArgumentException e){
             return ResponseEntity.notFound().build();
@@ -119,10 +119,10 @@ public class StaffController {
 
     @PostMapping("/grade/remove")
     public ResponseEntity<String> removeGrade(
-            @RequestParam String gradeName
+            @RequestParam String name
     ) {
         try{
-            coffeeService.removeGrade(gradeName);
+            coffeeService.removeGrade(name);
         }
         catch (IllegalArgumentException e){
             return ResponseEntity.notFound().build();
@@ -161,10 +161,10 @@ public class StaffController {
 
     @PostMapping("/good/remove")
     public ResponseEntity<String> removeGood(
-            @RequestParam String goodName
+            @RequestParam String name
     ) {
         try{
-            coffeeService.removeGood(goodName);
+            coffeeService.removeGood(name);
         }
         catch (IllegalArgumentException e){
             return ResponseEntity.notFound().build();
